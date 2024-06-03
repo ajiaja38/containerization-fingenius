@@ -1,0 +1,101 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=windows-1252"> 
+  <title>Coverage Report > TransactionRepository</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">com.spring.starter.repository</a>
+</div>
+
+<h1>Coverage Summary for Class: TransactionRepository (com.spring.starter.repository)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+</tr>
+<tr>
+  <td class="name">TransactionRepository</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package com.spring.starter.repository;
+&nbsp;
+&nbsp;import com.spring.starter.model.dto.res.TransactionCategorySumDto;
+&nbsp;import com.spring.starter.model.entity.Transaction;
+&nbsp;import org.springframework.data.domain.Page;
+&nbsp;import org.springframework.data.domain.Pageable;
+&nbsp;import org.springframework.data.jpa.repository.JpaRepository;
+&nbsp;import org.springframework.data.jpa.repository.Query;
+&nbsp;import org.springframework.data.repository.query.Param;
+&nbsp;import org.springframework.stereotype.Repository;
+&nbsp;
+&nbsp;import java.util.Date;
+&nbsp;import java.util.List;
+&nbsp;import java.util.Optional;
+&nbsp;
+&nbsp;@Repository
+&nbsp;public interface TransactionRepository extends JpaRepository&lt;Transaction, String&gt; {
+&nbsp;
+&nbsp;    List&lt;Transaction&gt; findAllByUserId(String userId);
+&nbsp;
+&nbsp;    @Query(&quot;SELECT t FROM Transaction t WHERE t.user.id = :userId AND t.category.id = :categoryId AND MONTH(t.createdAt) = :month AND YEAR(t.createdAt) = :year&quot; )
+&nbsp;    List&lt;Transaction&gt; findByUserIdAndCategoryId(@Param(&quot;userId&quot;) String userId, @Param(&quot;categoryId&quot;) String categoryId, @Param(&quot;month&quot;) Integer month, @Param(&quot;year&quot;) Integer year);
+&nbsp;
+&nbsp;    @Query(&quot;SELECT t FROM Transaction t WHERE t.user.id = :userId AND t.category.type.id = :typeId AND MONTH(t.createdAt) = :month AND YEAR(t.createdAt) = :year&quot; )
+&nbsp;    List&lt;Transaction&gt; findByCategoryTypeId(@Param(&quot;userId&quot;) String userId, @Param(&quot;typeId&quot;) String typeId, @Param(&quot;month&quot;) Integer month, @Param(&quot;year&quot;) Integer year);
+&nbsp;
+&nbsp;    Page&lt;Transaction&gt; findAllByUserId(String userId, Pageable pageable);
+&nbsp;    Page&lt;Transaction&gt; findByNameIgnoreCaseContainingOrDescriptionIgnoreCaseContainingAndUserId(String name, String description, String userId, Pageable pageable);
+&nbsp;    Optional&lt;Transaction&gt; findByIdAndUserId(String id, String userId);
+&nbsp;
+&nbsp;//    @Query(&quot;SELECT c.name, SUM(t.amount) AS amountTransactionCategorySum, SUM(t.amount)/(SELECT SUM(t.amount) FROM Transaction t JOIN t.category c WHERE t.category.id = c.id JOIN Type t2 ON t.category.type.name = :typeName WHERE t.createdAt BETWEEN :startDate AND :endDate) * 100 AS percentageTransactionCategorySum FROM Transaction t JOIN t.category c WHERE t.category.id = c.id AND t.createdAt BETWEEN :startDate AND :endDate GROUP BY c.name&quot;)
+&nbsp;//    List&lt;Transaction&gt; findTransactionCategorySum(@Param(&quot;typeName&quot;) String typeName, @Param(&quot;startDate&quot;) Date startDate, @Param(&quot;endDate&quot;) Date endDate);
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2024-05-17 20:17</div>
+</div>
+</body>
+</html>

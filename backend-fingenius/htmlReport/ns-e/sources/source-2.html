@@ -1,0 +1,84 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=windows-1252"> 
+  <title>Coverage Report > BudgetingService</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">com.spring.starter.service</a>
+</div>
+
+<h1>Coverage Summary for Class: BudgetingService (com.spring.starter.service)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+</tr>
+<tr>
+  <td class="name">BudgetingService</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package com.spring.starter.service;
+&nbsp;
+&nbsp;import com.spring.starter.model.dto.req.BudgetingDto;
+&nbsp;import com.spring.starter.model.entity.Budgeting;
+&nbsp;
+&nbsp;import java.util.List;
+&nbsp;
+&nbsp;public interface BudgetingService {
+&nbsp;    List&lt;Budgeting&gt; getBudgetingAuthUser();
+&nbsp;    Budgeting getBudgetingAuthUserById(String id);
+&nbsp;    Budgeting saveBudgeting(BudgetingDto budgetingDto);
+&nbsp;    Budgeting updateAmountBudgeting(String id, BudgetingDto budgetingDto);
+&nbsp;    Budgeting updateActiveBudgeting(String id);
+&nbsp;    void deleteBudgeting(String id);
+&nbsp;
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2024-05-17 20:17</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,188 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=windows-1252"> 
+  <title>Coverage Report > TypeServiceImpl</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">com.spring.starter.service.impl</a>
+</div>
+
+<h1>Coverage Summary for Class: TypeServiceImpl (com.spring.starter.service.impl)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">TypeServiceImpl</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (7/7)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    80%
+  </span>
+  <span class="absValue">
+    (8/10)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    91.3%
+  </span>
+  <span class="absValue">
+    (21/23)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package com.spring.starter.service.impl;
+&nbsp;
+&nbsp;import com.spring.starter.repository.TypeRepository;
+&nbsp;import com.spring.starter.service.TypeService;
+&nbsp;import com.spring.starter.utils.constant.EType;
+&nbsp;import com.spring.starter.model.dto.req.TypeDto;
+&nbsp;import com.spring.starter.model.entity.Type;
+&nbsp;import lombok.RequiredArgsConstructor;
+&nbsp;import org.springframework.http.HttpStatus;
+&nbsp;import org.springframework.stereotype.Service;
+&nbsp;import org.springframework.web.server.ResponseStatusException;
+&nbsp;
+&nbsp;import java.util.Date;
+&nbsp;import java.util.List;
+&nbsp;
+&nbsp;@Service
+<b class="fc">&nbsp;@RequiredArgsConstructor</b>
+&nbsp;public class TypeServiceImpl implements TypeService {
+&nbsp;
+&nbsp;    private final TypeRepository typeRepository;
+<b class="fc">&nbsp;    private final EType[] listType = EType.values();</b>
+&nbsp;
+&nbsp;    private void checkTypeExist(String name) {
+<b class="fc">&nbsp;        boolean isNotFound = true;</b>
+<b class="fc">&nbsp;        for (EType type : listType) {</b>
+<b class="fc">&nbsp;            if (type.getValue().equals(name)) {</b>
+<b class="fc">&nbsp;                isNotFound = false;</b>
+&nbsp;            }
+&nbsp;        }
+&nbsp;
+<b class="pc">&nbsp;        if(isNotFound) {</b>
+<b class="nc">&nbsp;            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, &quot;Type Not Found&quot;);</b>
+&nbsp;        }
+&nbsp;
+<b class="fc">&nbsp;        if(typeRepository.findByName(name).isPresent()) {</b>
+<b class="fc">&nbsp;            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, &quot;Type Already Exists&quot;);</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public List&lt;Type&gt; getAllTypes() {
+<b class="fc">&nbsp;        return typeRepository.findAll();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public Type getTypeById(String id) {
+<b class="fc">&nbsp;        return typeRepository.findById(id).orElseThrow(</b>
+<b class="fc">&nbsp;                () -&gt; new ResponseStatusException(HttpStatus.NOT_FOUND, &quot;Type Not Found&quot;)</b>
+&nbsp;        );
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public Type saveType(TypeDto typeDto) {
+&nbsp;
+<b class="fc">&nbsp;        this.checkTypeExist(typeDto.getName());</b>
+&nbsp;
+<b class="fc">&nbsp;        Type savedType = Type.builder()</b>
+<b class="fc">&nbsp;                .name(typeDto.getName())</b>
+<b class="fc">&nbsp;                .createdAt(new Date())</b>
+<b class="fc">&nbsp;                .updatedAt(new Date())</b>
+<b class="fc">&nbsp;                .build();</b>
+<b class="fc">&nbsp;        return typeRepository.save(savedType);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public void deleteType(String id) {
+<b class="pc">&nbsp;        if(typeRepository.findById(id).isPresent()) {</b>
+<b class="nc">&nbsp;            typeRepository.deleteById(id);</b>
+&nbsp;        }
+<b class="fc">&nbsp;        throw new ResponseStatusException(HttpStatus.NOT_FOUND, &quot;Type Not Found&quot;);</b>
+&nbsp;    }
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2024-05-17 20:17</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,341 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=windows-1252"> 
+  <title>Coverage Report > TransactionServiceImpl</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">com.spring.starter.service.impl</a>
+</div>
+
+<h1>Coverage Summary for Class: TransactionServiceImpl (com.spring.starter.service.impl)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">TransactionServiceImpl</td>
+<td class="coverageStat">
+  <span class="percent">
+    5.6%
+  </span>
+  <span class="absValue">
+    (1/18)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/18)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    1.2%
+  </span>
+  <span class="absValue">
+    (1/81)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">TransactionServiceImpl$$SpringCGLIB$$0</td>
+  </tr>
+<tr>
+  <td class="name"><strong>Total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    5.6%
+  </span>
+  <span class="absValue">
+    (1/18)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/18)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    1.2%
+  </span>
+  <span class="absValue">
+    (1/81)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package com.spring.starter.service.impl;
+&nbsp;
+&nbsp;import com.spring.starter.model.dto.req.TransactionCtgDto;
+&nbsp;import com.spring.starter.model.dto.res.TransactionCategorySumDto;
+&nbsp;import com.spring.starter.model.entity.User;
+&nbsp;import com.spring.starter.repository.TransactionRepository;
+&nbsp;import com.spring.starter.service.TransactionService;
+&nbsp;import com.spring.starter.model.dto.req.TransactionFilterDto;
+&nbsp;import com.spring.starter.model.dto.req.TransactionRequestDto;
+&nbsp;import com.spring.starter.model.dto.res.TransactionResponseDto;
+&nbsp;import com.spring.starter.model.entity.Category;
+&nbsp;import com.spring.starter.model.entity.Transaction;
+&nbsp;import com.spring.starter.model.entity.Type;
+&nbsp;import com.spring.starter.repository.CategoryRepository;
+&nbsp;import com.spring.starter.repository.TypeRepository;
+&nbsp;import com.spring.starter.repository.UserRepository;
+&nbsp;import com.spring.starter.service.ResponseDtoBuilder;
+&nbsp;import com.spring.starter.service.UserService;
+&nbsp;import com.spring.starter.utils.constant.EType;
+&nbsp;import lombok.RequiredArgsConstructor;
+&nbsp;import org.springframework.data.domain.Page;
+&nbsp;import org.springframework.data.domain.PageImpl;
+&nbsp;import org.springframework.data.domain.Pageable;
+&nbsp;import org.springframework.http.HttpStatus;
+&nbsp;import org.springframework.stereotype.Service;
+&nbsp;import org.springframework.transaction.annotation.Transactional;
+&nbsp;import org.springframework.web.server.ResponseStatusException;
+&nbsp;
+&nbsp;import java.util.Date;
+&nbsp;import java.util.List;
+&nbsp;import java.util.stream.Collectors;
+&nbsp;
+&nbsp;@Service
+<b class="fc">&nbsp;@RequiredArgsConstructor</b>
+&nbsp;public class TransactionServiceImpl implements TransactionService {
+&nbsp;
+&nbsp;    private final TransactionRepository transactionRepository;
+&nbsp;    private final UserRepository userRepository;
+&nbsp;    private final UserService userService;
+&nbsp;    private final CategoryRepository categoryRepository;
+&nbsp;    private final TypeRepository typeRepository;
+&nbsp;    private final ResponseDtoBuilder responseDtoBuilder;
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public List&lt;TransactionResponseDto&gt; getAllTransactions() {
+<b class="nc">&nbsp;        List&lt;Transaction&gt; transactions = transactionRepository.findAllByUserId(userService.getAuthenticatedUser().getId());</b>
+<b class="nc">&nbsp;        return transactions.stream().map(responseDtoBuilder::transactionResponseTransformer).toList();</b>
+&nbsp;    }
+&nbsp;    @Override
+&nbsp;    public List&lt;TransactionResponseDto&gt; getAllTransactionsWithFilter(TransactionFilterDto transactionFilterDto) {
+&nbsp;        List&lt;Transaction&gt; transactions;
+<b class="nc">&nbsp;        if(transactionFilterDto.getFilterBy().equals(&quot;category&quot;)){</b>
+<b class="nc">&nbsp;            Category category = categoryRepository.findByName(transactionFilterDto.getFilter()).orElseThrow(</b>
+<b class="nc">&nbsp;                    () -&gt; new ResponseStatusException(HttpStatus.NOT_FOUND, &quot;Category Not Found&quot;)</b>
+&nbsp;            );
+<b class="nc">&nbsp;            transactions = transactionRepository.findByUserIdAndCategoryId(userService.getAuthenticatedUser().getId(),</b>
+<b class="nc">&nbsp;                                                                            category.getId(),</b>
+<b class="nc">&nbsp;                                                                            transactionFilterDto.getMonth(),</b>
+<b class="nc">&nbsp;                                                                            transactionFilterDto.getYear());</b>
+&nbsp;        } else {
+<b class="nc">&nbsp;            Type type = typeRepository.findByName(transactionFilterDto.getFilter()).orElseThrow(</b>
+<b class="nc">&nbsp;                    () -&gt; new ResponseStatusException(HttpStatus.NOT_FOUND, &quot;Type Not Found&quot;)</b>
+&nbsp;            );
+<b class="nc">&nbsp;            transactions = transactionRepository.findByCategoryTypeId(userService.getAuthenticatedUser().getId(),</b>
+<b class="nc">&nbsp;                                                                            type.getId(),</b>
+<b class="nc">&nbsp;                                                                            transactionFilterDto.getMonth(),</b>
+<b class="nc">&nbsp;                                                                            transactionFilterDto.getYear());</b>
+&nbsp;        }
+<b class="nc">&nbsp;        return transactions.stream().map(responseDtoBuilder::transactionResponseTransformer).toList();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public Page&lt;TransactionResponseDto&gt; getAllTransactions(String query, Pageable pageable) {
+&nbsp;        Page&lt;Transaction&gt; transactions;
+&nbsp;
+<b class="nc">&nbsp;        String userId = userService.getAuthenticatedUser().getId();</b>
+<b class="nc">&nbsp;        if (!query.isEmpty()) {</b>
+<b class="nc">&nbsp;            transactions = this.transactionRepository.findByNameIgnoreCaseContainingOrDescriptionIgnoreCaseContainingAndUserId(query, query, userId, pageable);</b>
+&nbsp;        } else {
+<b class="nc">&nbsp;            transactions = this.transactionRepository.findAllByUserId(userId, pageable);</b>
+&nbsp;        }
+&nbsp;
+<b class="nc">&nbsp;        List&lt;TransactionResponseDto&gt; result = transactions.stream().map(responseDtoBuilder::transactionResponseTransformer).toList();</b>
+<b class="nc">&nbsp;        return new PageImpl&lt;&gt;(result, pageable, transactions.getTotalElements());</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public TransactionResponseDto getTransactionById(String id) {
+<b class="nc">&nbsp;        Transaction transaction = transactionRepository.findByIdAndUserId(id, userService.getAuthenticatedUser().getId()).orElseThrow(</b>
+<b class="nc">&nbsp;                () -&gt; new ResponseStatusException(HttpStatus.NOT_FOUND, &quot;Transaction Not Found&quot;)</b>
+&nbsp;        );
+&nbsp;
+<b class="nc">&nbsp;        return responseDtoBuilder.transactionResponseTransformer(transaction);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    @Transactional
+&nbsp;    public TransactionResponseDto saveTransaction(TransactionRequestDto transactionRequestDto) {
+<b class="nc">&nbsp;        User user = userRepository.findById(userService.getAuthenticatedUser().getId()).orElseThrow(</b>
+<b class="nc">&nbsp;                () -&gt; new ResponseStatusException(HttpStatus.NOT_FOUND, &quot;User Not Found&quot;)</b>
+&nbsp;        );
+<b class="nc">&nbsp;        Category category = categoryRepository.findById(transactionRequestDto.getCategoryId()).orElseThrow(</b>
+<b class="nc">&nbsp;                () -&gt; new ResponseStatusException(HttpStatus.NOT_FOUND, &quot;Category Not Found&quot;)</b>
+&nbsp;        );
+&nbsp;
+&nbsp;        //Todo saldo update
+<b class="nc">&nbsp;        if(category.getType().getName().equals(EType.INCOME.getValue())) {</b>
+<b class="nc">&nbsp;            user.setBalance(user.getBalance() + transactionRequestDto.getAmount());</b>
+&nbsp;        } else {
+<b class="nc">&nbsp;            user.setBalance(user.getBalance() - transactionRequestDto.getAmount());</b>
+&nbsp;        }
+&nbsp;
+<b class="nc">&nbsp;        if(user.getBalance() &gt;= 0) {</b>
+<b class="nc">&nbsp;            userRepository.save(user);</b>
+&nbsp;        } else {
+<b class="nc">&nbsp;            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, &quot;Insufficient Balance&quot;);</b>
+&nbsp;        }
+&nbsp;
+&nbsp;        //Todo save Transaction
+<b class="nc">&nbsp;        Transaction transaction = Transaction.builder()</b>
+<b class="nc">&nbsp;                .name(transactionRequestDto.getName())</b>
+<b class="nc">&nbsp;                .description(transactionRequestDto.getDescription())</b>
+<b class="nc">&nbsp;                .user(user)</b>
+<b class="nc">&nbsp;                .category(category)</b>
+<b class="nc">&nbsp;                .amount(transactionRequestDto.getAmount())</b>
+<b class="nc">&nbsp;                .createdAt(new Date())</b>
+<b class="nc">&nbsp;                .updatedAt(new Date())</b>
+<b class="nc">&nbsp;                .build();</b>
+<b class="nc">&nbsp;        transactionRepository.save(transaction);</b>
+&nbsp;
+<b class="nc">&nbsp;        return responseDtoBuilder.transactionResponseTransformer(transaction);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    @Transactional
+&nbsp;    public TransactionResponseDto updateTransaction(String id, TransactionRequestDto transactionRequestDto) {
+<b class="nc">&nbsp;        User user = userRepository.findById(userService.getAuthenticatedUser().getId()).orElseThrow(</b>
+<b class="nc">&nbsp;                () -&gt; new ResponseStatusException(HttpStatus.NOT_FOUND, &quot;User Not Found&quot;)</b>
+&nbsp;        );
+&nbsp;
+<b class="nc">&nbsp;        Transaction transaction = transactionRepository.findByIdAndUserId(id, userService.getAuthenticatedUser().getId()).orElseThrow(</b>
+<b class="nc">&nbsp;                () -&gt; new ResponseStatusException(HttpStatus.NOT_FOUND, &quot;Transaction Not Found&quot;)</b>
+&nbsp;        );
+&nbsp;
+<b class="nc">&nbsp;        Category category = categoryRepository.findById(transactionRequestDto.getCategoryId()).orElseThrow(</b>
+<b class="nc">&nbsp;                () -&gt; new ResponseStatusException(HttpStatus.NOT_FOUND, &quot;Category Not Found&quot;)</b>
+&nbsp;        );
+&nbsp;
+<b class="nc">&nbsp;        Long balance = user.getBalance();</b>
+&nbsp;
+&nbsp;        //Todo update saldo
+<b class="nc">&nbsp;        if(transaction.getCategory().getType().getName().equals(EType.INCOME.getValue())) {</b>
+<b class="nc">&nbsp;            balance -= transaction.getAmount();</b>
+&nbsp;        } else {
+<b class="nc">&nbsp;            balance += transaction.getAmount();</b>
+&nbsp;        }
+&nbsp;
+<b class="nc">&nbsp;        if(category.getType().getName().equals(EType.INCOME.getValue())) {</b>
+<b class="nc">&nbsp;            balance += transactionRequestDto.getAmount();</b>
+&nbsp;        } else {
+<b class="nc">&nbsp;            balance -= transactionRequestDto.getAmount();</b>
+&nbsp;        }
+<b class="nc">&nbsp;        user.setBalance(balance);</b>
+&nbsp;
+<b class="nc">&nbsp;        if(user.getBalance() &gt;= 0) {</b>
+<b class="nc">&nbsp;            userRepository.save(user);</b>
+&nbsp;        } else {
+<b class="nc">&nbsp;            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, &quot;Insufficient Balance&quot;);</b>
+&nbsp;        }
+&nbsp;
+&nbsp;        //Todo update Transaction
+<b class="nc">&nbsp;        transaction.setName(transactionRequestDto.getName());</b>
+<b class="nc">&nbsp;        transaction.setDescription(transactionRequestDto.getDescription());</b>
+<b class="nc">&nbsp;        transaction.setCategory(category);</b>
+<b class="nc">&nbsp;        transaction.setAmount(transactionRequestDto.getAmount());</b>
+<b class="nc">&nbsp;        transaction.setUpdatedAt(new Date());</b>
+&nbsp;
+<b class="nc">&nbsp;        transactionRepository.save(transaction);</b>
+&nbsp;
+<b class="nc">&nbsp;        return responseDtoBuilder.transactionResponseTransformer(transaction);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    @Transactional
+&nbsp;    public void deleteTransaction(String id) {
+<b class="nc">&nbsp;        if(transactionRepository.findByIdAndUserId(id, userService.getAuthenticatedUser().getId()).isPresent()) {</b>
+&nbsp;
+<b class="nc">&nbsp;            Transaction transaction = transactionRepository.findByIdAndUserId(id, userService.getAuthenticatedUser().getId()).orElseThrow(</b>
+<b class="nc">&nbsp;                    () -&gt; new ResponseStatusException(HttpStatus.NOT_FOUND, &quot;Transaction Not Found&quot;)</b>
+&nbsp;            );
+<b class="nc">&nbsp;            User user = userRepository.findById(userService.getAuthenticatedUser().getId()).orElseThrow(</b>
+<b class="nc">&nbsp;                    () -&gt; new ResponseStatusException(HttpStatus.NOT_FOUND, &quot;User Not Found&quot;)</b>
+&nbsp;            );
+&nbsp;            //Todo update saldo
+<b class="nc">&nbsp;            if(transaction.getCategory().getType().getName().equals(EType.INCOME.getValue())) {</b>
+<b class="nc">&nbsp;                user.setBalance(user.getBalance() - transaction.getAmount() );</b>
+&nbsp;            } else {
+<b class="nc">&nbsp;                user.setBalance(user.getBalance() + transaction.getAmount() );</b>
+&nbsp;            }
+&nbsp;
+<b class="nc">&nbsp;            transactionRepository.deleteById(id);</b>
+&nbsp;        } else {
+<b class="nc">&nbsp;            throw new ResponseStatusException(HttpStatus.NOT_FOUND, &quot;Transaction Not Found&quot;);</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2024-05-17 20:17</div>
+</div>
+</body>
+</html>
